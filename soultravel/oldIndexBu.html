@@ -1,0 +1,538 @@
+<?php
+  /*
+  Template Name: Main
+  */
+	$options = get_option('soultravel');
+	get_header();
+?>
+<!-- ! header page-->
+<div class="content-body">
+    <div class="tp-banner-container">
+        <div class="tp-banner-slider">
+            <ul>
+                <?php
+          		foreach ($options['main-slider'] as $key => $slide):
+                switch ($key % 4) {
+                case 0:
+                $pos_in = 'x:-150px';
+                $pos_out = 'x:150px';
+                break;
+
+                case 1:
+                $pos_in = 'y:-150px';
+                $pos_out = 'y:150px';
+                break;
+
+                case 2:
+                $pos_in = 'x:150px';
+                $pos_out = 'x:-150px';
+                break;
+
+                case 3:
+                $pos_in = 'y:150px';
+                $pos_out = 'y:-150px';
+                break;
+                }
+                ?>
+                <li data-masterspeed="700" data-slotamount="7" data-transition="fade"><img src="<?php bloginfo('template_directory'); ?>/rs-plugin/assets/loader.gif" data-lazyload="<?=$slide['image']?>" data-bgposition="center" alt="" data-kenburns="on" data-duration="30000" data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="120" data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0" data-bgparallax="10">
+                    <div data-x="['center','center','center','center']" data-y="center" data-transform_in="<?=$pos_in?>;opacity:0;s:1500;e:Power3.easeInOut;" data-transform_out="<?=$pos_out?>;opacity:0;s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;" data-start="400" class="tp-caption sl-content">
+                        <div class="sl-title-top"><?=$slide['url']?></div>
+                        <div class="sl-title"><?=$slide['title']?></div>
+                        <div class="sl-title-bot"><?=$slide['description']?></div>
+                    </div>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <!-- slider info-->
+        <div class="slider-info-wrap clearfix">
+            <div class="slider-info-content">
+                <?php
+                  $cheapest_tour_slugs = array();
+                  $country_names = array('ajya-napa', 'shri-lanka', 'maldivyi', 'egipet');
+                  foreach ($country_names as $name) {
+                    $args = array(
+                      'post_type'      => 'tour',
+                'order'          => 'DESC',
+                'posts_per_page' => -1,
+                'tax_query' => array(
+                array(
+                'taxonomy' => 'country',
+                'field'    => 'slug',
+                'terms'    => $name
+                )
+                )
+                );
+                $hotels = get_posts($args);
+                $id_hotels = array();
+                foreach ($hotels as $hotel) {
+                $id_hotels[] = $hotel->ID;
+                }
+                $args = array(
+                'taxonomy' => 'hotels',
+                'hide_empty' => false,
+                'object_ids' => $id_hotels,
+                );
+                $tours = get_terms( $args );
+                $l_p = 9999999;
+                foreach ($tours as $t) {
+                $temp = av_get_field('price', $t->taxonomy.'_'.$t->term_id);
+                if ($temp < $l_p) {
+                $l_p = $temp;
+                $tours[0] = $t;
+                }
+                }
+                $t_f = $tours[0]->taxonomy.'_'.$tours[0]->term_id;
+
+                $args = array(
+                'post_type'      => 'tour',
+                'posts_per_page' => 1,
+                'post__in' => $id_hotels,
+                'tax_query' => array(
+                array(
+                'taxonomy' => 'hotels',
+                'field'    => 'slug',
+                'terms'    => 'tour_'.$tours[0]->term_id,
+                )
+                )
+                );
+                $hotel = get_posts($args);
+                setup_postdata($hotel[0]);
+                $price = (av_get_field('price_sale', $t_f)) ? av_get_field('price_sale', $t_f) : av_get_field('price', $t_f);
+                $hotel_term = get_the_terms($hotel[0]->ID, 'country')[0];
+                $parent_tax = get_term($hotel_term->parent, 'country');
+                $parent_add_name = '';
+                if (!empty($parent_tax->name)) $parent_add_name = ', '.$parent_tax->name;
+                $curr = av_get_field('currency', $t_f);
+                if ($curr == "") $curr = "$"; ?>
+                <!-- ! Blog item-->
+                <div class="slider-info-item">
+                    <div class="info-item-media">
+                        <?php echo get_the_post_thumbnail($hotel[0]->ID, 'thumbnail'); ?>
+                        <div class="info-item-text">
+                            <div class="info-price font-4"><span>Цена тура (<?=av_get_field('period', $t_f)?> ночей)</span> <?=$price.$curr?></div>
+                            <div class="info-temp font-4"><span>Город отправления</span> <?=av_get_field('city', $t_f)?></div>
+                            <p class="info-text"><?=get_field('short_about', $hotel[0]->ID)?></p>
+                        </div>
+                    </div>
+                    <div class="info-item-content">
+                        <div class="main-title">
+                            <h3 class="title"><span class="font-4"><?=$hotel_term->name.$parent_add_name?></span><?php echo get_the_title( $hotel[0]->ID ); ?></h3>
+                            <div class="price"><span><?=$price.$curr?></span></div><a href="<?=get_permalink($hotel[0]->ID)?>" class="button">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+        <!-- ! slider-info-->
+    </div>
+    <!-- page section-->
+    <section class="page-section pb-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h6 class="title-section-top font-4"><?=$options['destinations-above-header']?></h6>
+                    <h1 class="title-section"><?=$options['destinations-header']?></h1>
+                    <div class="cws_divider mb-25 mt-5"></div>
+                    <p><?=$options['destinations-text']?></p>
+                </div>
+                <div class="col-md-4"><img src="<?=$options['destinations-img']['url']?>" alt="довольные клиенты" class="mt-md-0 mt-minus-70"></div>
+            </div>
+        </div>
+        <br>
+        <div class="features-tours-full-width">
+            <div class="container">
+                <div class="features-tours-wrap clearfix">
+                    <?php
+                $args = array(
+                  'taxonomy' => 'country',
+                    'order'    => 'ASC',
+                    'posts_per_page' => -1
+                    );
+
+                    $terms = get_terms( $args );
+
+                    $num = 8;
+
+                    foreach ( $terms as $term ): if ($num > 0 && av_get_field('main', $term->taxonomy.'_'.$term->term_id)): $num--; if ($term->parent == 0) { $link = home_url().'/'.$term->slug; } else { $term_parent = get_term_by( 'id', $term->parent, 'country' ); $link = home_url().'/'.$term_parent->slug.'/'.$term->slug; } ?>
+                    <div class="features-tours-item">
+                        <div class="features-media">
+                            <img src="<?=get_field('img', $term->taxonomy.'_'.$term->term_id)['sizes']['medium']?>" alt="Путевки в <?=$term->name?>" >
+                            <div class="features-info-top">
+                                <?php
+                          $args = array(
+                              'post_type'      => 'tour',
+                                'posts_per_page' => -1,
+                                'tax_query' => array(
+                                array(
+                                'taxonomy' => 'country',
+                                'field'    => 'slug',
+                                'terms'    => $term->slug,
+                                )
+                                )
+                                );
+                                $hotels = get_posts($args);
+                                $id_hotels = array();
+                                foreach ($hotels as $k => $v) {
+                                $id_hotels[] = $v->ID;
+                                }
+                                $args = array(
+                                'taxonomy' => 'hotels',
+                                'object_ids' => $id_hotels,
+                                'meta_query' => array(
+                                'key'       => 'period',
+                                'value'     => 7,
+                                'compare'   => '>=',
+                                ),
+                                );
+                                $tour_week = get_terms( $args );
+                                $l_p = 9999999;
+                                foreach ($tour_week as $t) {
+                                $temp = av_get_field('price', $t->taxonomy.'_'.$t->term_id);
+                                if ($temp < $l_p) {
+                                $l_p = $temp;
+                                $tour_week[0] = $t;
+                                }
+                                }
+                                $t_f = $tour_week[0]->taxonomy.'_'.$tour_week[0]->term_id;
+                                $price = (av_get_field('price_sale', $t_f)) ? av_get_field('price_sale', $t_f) : av_get_field('price', $t_f);
+                                $curr = av_get_field('currency', $t_f);
+                                if (empty($curr)) $curr = '$';
+                                ?>
+                                <div class="info-price font-4"><span>Цена тура за неделю</span> <?=$price.$curr?></div>
+                                <div class="info-temp font-4"><span>Вылеты из</span><?=av_get_field('city', $term->taxonomy.'_'.$term->term_id)?></div>
+                                <p class="info-text"><?=strip_tags(av_get_field('about_short', $term->taxonomy.'_'.$term->term_id))?></p>
+                            </div>
+                            <div class="features-info-bot">
+                                <h4 class="title"><?=$term->name?></h4>
+                                <a href="<?=$link?>/" class="button">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ! page section-->
+
+    <!-- recomended section-->
+    <section class="small-section bg-gray" style="padding: 60px 0 !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h6 class="title-section-top font-4">н6</h6>
+                    <h2 class="title-section">Лучшие предложения по отдыху н2</h2>
+                    <div class="cws_divider mb-25 mt-5"></div>
+                    <p>текст</p>
+                </div>
+                <div class="col-md-4"><i class="flaticon-suntour-hotel title-icon"></i></div>
+            </div>
+            <div class="row">
+                <?php
+                $args = array(
+                'posts_per_page' => 8,
+                'orderby' => 'comment_count'
+                );
+                 $q = new WP_Query($args);
+
+                if($q->have_posts()) {
+                while($q->have_posts()){ $q->the_post();
+                }
+
+                ?>
+                <!-- Recomended item-->
+                <div class="col-md-6">
+                    <div class="recom-item">
+                        <div class="recom-media"><a href="<?=get_permalink()?>">
+                            <div class="pic"><img src="" alt="<?php the_title(); ?>" style="height: 250px;"></div></a>
+                        </div>
+                        <!-- Recomended Content-->
+                        <div class="recom-item-body"><a href="<?=get_permalink()?>">
+                            <h6 class="blog-title"><?php the_title(); ?></h6></a>
+
+                            <div class="mb-30" style="height: 75px;overflow: hidden;"><?php echo 'about'; ?></div>
+                            <a href="<?=get_permalink()?>" class="recom-button">Подробнее</a><a href="#order" class="cws-button small alt fancy">Оставить заявку</a>
+
+                        </div>
+                        <!-- Recomended Image-->
+                    </div>
+                </div>
+                <!-- ! Recomended item-->
+                <?php endwhile; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+    <!-- ! recomended section-->
+
+    <!-- page services-->
+    <section class="page-section cws_prlx_section pb-100 bg-gray-60"><img src="/wp-content/themes/soultravel/pic/r1.jpg" alt class="cws_prlx_layer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 class="title-section alt">Как работает наша <span>Турфирма</span></h2>
+                    <div class="cws_divider mb-25 mt-5"></div>
+                    <p class="color-white">Мы сопровождаем вас на протяжении всех этапов - от начала отпуска и до вашего прилета обратно, на каждом из 6 простых шагов - мы с радостю делимся всей информацией, рассказываем о ньюансах и отвечаем на возникшие вопросы </p>
+                </div>
+            </div>
+            <div class="row">
+                <!-- service item-->
+                <div class="col-md-4 col-sm-6 mb-40">
+                    <div class="service-item icon-center color-icon border"><i class="flaticon-suntour-world cws-icon type-1 color-2"></i>
+                        <h3>Шаг 1. Ваши предпочтения</h3>
+                        <p class="mb-0">Мы узнаем у вас все подробности желаемого отдыха - проводим короткий опрос</p>
+                    </div>
+                </div>
+                <!-- service item-->
+                <!-- ! service item-->
+                <div class="col-md-4 col-sm-6 mb-40">
+                    <div class="service-item icon-center color-icon border"><i class="flaticon-suntour-fireworks cws-icon type-1 color-2"></i>
+                        <h3>Шаг 2. Подбираем варианты</h3>
+                        <p class="mb-0">В соотвествтии с вашими пожеланиями мы отбираем наиболее подходящие варианты </p>
+                    </div>
+                </div>
+                <!-- service item-->
+                <!-- ! service item-->
+                <div class="col-md-4 col-sm-6 mb-40">
+                    <div class="service-item icon-center color-icon border"><i class="flaticon-suntour-hotel cws-icon type-1 color-2"></i>
+                        <h3>Шаг 3. Оформляем путевку</h3>
+                        <p class="mb-0">У нас в офисе заносим данные ваших загранпаспортов, оплачиваем путевку и отправляем заявку на бронирование тура </p>
+                    </div>
+                </div>
+                <!-- ! service item-->
+                <!-- service item-->
+                <div class="col-md-4 col-sm-6 mb-40">
+                    <div class="service-item icon-center color-icon border"><i class="flaticon-suntour-ship cws-icon type-1 color-2"></i>
+                        <h3>Шаг 4. Подтверждаем тур</h3>
+                        <p class="mb-0">После того как туроператор подтверждает бронирование отеля и рейса вы получаете полный пакет документов </p>
+                    </div>
+                </div>
+                <!-- service item-->
+                <!-- ! service item-->
+                <div class="col-md-4 col-sm-6 mb-40">
+                    <div class="service-item icon-center color-icon border"><i class="flaticon-suntour-airplane cws-icon type-1 color-2"></i>
+                        <h3>Шаг 5. Наслаждаетесь отдыхом</h3>
+                        <p class="mb-0">Ваш отпуск полный эмоций и приключений или наоборот - спокойствия и наслаждения </p>
+                    </div>
+                </div>
+                <!-- service item-->
+                <!-- ! service item-->
+                <div class="col-md-4 col-sm-6">
+                    <div class="service-item icon-center color-icon border"><i class="flaticon-suntour-car cws-icon type-1 color-2"></i>
+                        <h3>Шаг 6. Делитесь впечатлениями</h3>
+                        <p class="mb-0">Отдохнувшие и загорелые делитесь с нами впечатлениями о поездке  </p>
+                    </div>
+                </div>
+                <!-- ! service item-->
+            </div>
+        </div>
+    </section>
+    <!-- ! page services-->
+
+    <!-- page section parallax
+    <section class="small-section cws_prlx_section bg-gray-40"><img src="<?=$options['about-bg']['url']?>" alt class="cws_prlx_layer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <h2 class="title-section-top alt"><?=$options['about-header']?></h2>
+            <h2 class="title-section alt mb-20"><?=$options['about-header-name']?></h2>
+            <p class="color-white"><?=$options['about-text']?></p>
+            <div class="cws_divider short mb-30 mt-30"></div>
+            <h3 class="font-5 color-white font-medium"><?=$options['about-author']?></h3>
+          </div>
+          <div class="col-md-7">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe src="<?=$options['about-video']?>" class="embed-responsive-item"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ! page section parallax-->
+
+
+
+    <!-- testimonials section-->
+    <section class="small-section cws_prlx_section bg-blue-40"><img src="<?=$options['recalls-bg']['url']?>" alt class="cws_prlx_layer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h6 class="title-section-top font-4"><?=$options['recalls-header-above']?></h6>
+                    <h2 class="title-section alt-2"><?=$options['recalls-header']?></h2>
+                    <div class="cws_divider mb-25 mt-5"></div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- testimonial carousel-->
+                <div class="owl-three-item">
+                    <?php
+                  $args = array(
+                      'post_type'      => 'recalls',
+                    'order'          => 'DESC',
+                    'posts_per_page' => -1,
+                    );
+
+                    $recalls = new WP_Query($args);
+
+                    if ($recalls->have_posts()):
+                    while ($recalls->have_posts()) : $recalls->the_post(); ?>
+                    <!-- testimonial item-->
+                    <div class="testimonial-item">
+                        <div class="testimonial-top"><a href="<?=get_permalink()?>">
+                            <div class="pic"><img src="<?php the_field('bg'); ?>" alt="" ></div></a>
+                            <div class="author"><?php the_post_thumbnail('thumbnail'); ?></div>
+                        </div>
+                        <!-- testimonial content-->
+                        <div class="testimonial-body">
+                            <h5 class="title"><?php the_field('author'); ?></h5>
+                            <div class="stars stars-<?php the_field('rating'); ?>"></div>
+                            <p class="align-center"><?php the_field('preview'); ?></p><a href="<?=get_permalink()?>" class="testimonial-button">Подробнее</a>
+                        </div>
+                    </div>
+                    <!-- testimonial item-->
+                    <?php endwhile; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ! testimonials section-->
+    <!-- gallery section-->
+    <section class="small-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h6 class="title-section-top font-4"><?=$options['gallery-header-above']?></h6>
+                    <h2 class="title-section"><?=$options['gallery-header']?></h2>
+                    <div class="cws_divider mb-25 mt-5"></div>
+                    <p><?=$options['gallery-text']?></p>
+                </div>
+                <div class="col-md-4"><i class="flaticon-suntour-photo title-icon"></i></div>
+            </div>
+            <div class="row portfolio-grid">
+                <?php
+              	$arr_imgs = explode(',', $options['gallery']);
+              	foreach ($arr_imgs as $key => $id):
+                $img = wp_get_attachment_url($id);
+                $class = ($key % 9 === 0) ? 'col-md-6 col-sm-12 col-xs-12' : 'col-md-3 col-sm-6 col-xs-6';
+                $big = ($key % 9 === 0) ? 'big' : '';
+                ?>
+                <!-- portfolio item-->
+                <div class="<?=$class?>">
+                    <div class="portfolio-item <?=$big?>">
+                        <!-- portfolio image--><a href="<?=$img?>" class="fancy">
+                        <div class="portfolio-media"><img src="<?=$img?>" alt=""></div></a>
+                        <div class="links"><a href="<?=$img?>" class="fancy"><i class="fa fa-expand"></i></a></div>
+                    </div>
+                </div>
+                <!-- portfolio item-->
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <!-- ! gallery section-->
+    <!-- latest news-->
+    <section class="small-section cws_prlx_section bg-blue-40"><img src="<?=$options['blog-bg']['url']?>" alt class="cws_prlx_layer">
+        <div class="container">
+            <div class="row mb-50">
+                <div class="col-md-8">
+                    <h6 class="title-section-top font-4"><?=$options['blog-header-above']?></h6>
+                    <h2 class="title-section alt-2"><?=$options['blog-header']?></h2>
+                    <div class="cws_divider mb-25 mt-5"></div>
+                    <p class="color-white"><?=$options['blog-text']?></p>
+                </div>
+                <div class="col-md-4"><i class="flaticon-suntour-calendar title-icon alt"></i></div>
+            </div>
+            <div class="carousel-container">
+                <div class="row">
+                    <div class="owl-two-pag pagiation-carousel mb-20">
+                        <?php
+                  $args = array(
+                      'post_type'      => 'post',
+                        'order'          => 'DESC',
+                        'posts_per_page' => 4,
+                        );
+
+                        $blog = new WP_Query($args);
+
+                        if ($blog->have_posts()):
+                        while ($blog->have_posts()) : $blog->the_post(); ?>
+                        <!-- Blog item-->
+                        <div class="blog-item clearfix">
+                            <!-- Blog Image-->
+                            <div class="blog-media">
+                                <a href="<?=get_permalink()?>">
+                                    <div class="pic"><?php the_post_thumbnail(); ?></div>
+                                </a>
+                            </div>
+                            <!-- blog body-->
+                            <div class="blog-item-body clearfix">
+                                <!-- title--><a href="<?=get_permalink()?>">
+                                <h6 class="blog-title"><?php the_title(); ?></h6></a>
+                                <div class="blog-item-data"><?php the_time('D, d-m-Y'); ?></div>
+                                <!-- Text Intro-->
+                                <?php the_content(''); ?>
+                                <a href="<?=get_permalink()?>" class="blog-button">Подробнее</a>
+                            </div>
+                        </div>
+                        <!-- ! Blog item-->
+                        <?php endwhile; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ! latest news-->
+    <!-- call out section-->
+    <section class="page-section pt-90 pb-80 bg-main pattern relative">
+        <div class="container">
+            <div class="call-out-box clearfix with-icon">
+                <div class="row call-out-wrap">
+                    <div class="col-md-5">
+                        <h6 class="title-section-top gray font-4"><?=$options['subscribe-header-above']?></h6>
+                        <h2 class="title-section alt-2"><?=$options['subscribe-header']?></h2><i class="flaticon-suntour-email call-out-icon"></i>
+                    </div>
+                    <div class="col-md-7">
+                        <form method="post" class="mt-10 form" id="form-email">
+                            <div class="input-container">
+                                <input type="email" pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" placeholder="Введите ваш E-mail" value="" name="email" class="newsletter-field mb-0 form-row" required><i class="flaticon-suntour-email icon-left"></i>
+                                <button type="submit" class="subscribe-submit"><i class="flaticon-suntour-arrow icon-right"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ! call out section-->
+</div>
+<div id="order" style="display: none;">
+    <?php print do_shortcode('[contact-form-7 id="96" title="Оставить заявку"]'); ?>
+</div>
+<div id="thanks" style="display: none;text-align: center;">
+    <p style="font-size: 26px;margin: 10px"> <b>Спасибо за подписку!</b>
+</div>
+<?php get_footer(); ?>
+<script>
+    //Аякс отправка форм
+    //Документация: http://api.jquery.com/jquery.ajax/
+    $("#form-email").submit(function(event) {
+        var form = $(this);
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "http://soultravel.com.ua/wp-content/themes/soultravel/mail.php",
+            data: form.serialize()
+        }).done(function() {
+            form.find('input:not([type="hidden"])').val('');
+            $.fancybox($('#thanks'));
+            setTimeout(function() {
+                $.fancybox.close();
+            }, 3000);
+        });
+    });
+</script>

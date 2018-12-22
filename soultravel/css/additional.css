@@ -1,0 +1,25 @@
+@media all and (max-width: 478px) 
+{
+		.new_layer-open-to .listsWrap {
+		position: absolute;
+		top: 190px;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 200%;
+	}
+
+	#new_os-from .new_f-dropdown-list,
+	#new_os-duration .new_f-dropdown-list {
+		padding: 150px 0 0;
+	}
+
+.new_f-dates-container#new_f-dates-container #ui-datepicker-div {
+    padding-top: 130px !important;
+}
+
+.new_mobile-form .new_f-ext-body {
+    padding-top: 150px;
+}
+
+}

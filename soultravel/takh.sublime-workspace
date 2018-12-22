@@ -1,0 +1,318 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"to",
+				"tours"
+			],
+			[
+				"get_te",
+				"get_template_directory_uri"
+			],
+			[
+				"req",
+				"require_once"
+			],
+			[
+				"_",
+				"_GET"
+			],
+			[
+				"con",
+				"content"
+			],
+			[
+				"than",
+				"thanks"
+			],
+			[
+				"var",
+				"var_dump"
+			],
+			[
+				"ac",
+				"action\tAttr"
+			],
+			[
+				"b",
+				"bootstrap"
+			],
+			[
+				"li",
+				"link\tTag"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "<?php\n\n/**\n * \n * @param type $controlleName\n * @param type $actionName\n */\n\nfunction loadPage($smarty, $controllerName, $actionName = 'index') {\n    // Подключаем файл контроллера\n    include_once PathPrefix . $controllerName . PathPostfix;\n    $function = $actionName . 'Action' ;\n    $function($smarty);\n}\n\nfunction loadTemplate ($smarty, $templateName) {\n    $templateName .= TemplatePostfix ;\n\n    $smarty->display(TemplatePrefix.$templateName);\n    \n}\n\nfunction d ($value = null , $die = 1)\n{\n    echo 'Debug: <br/><pre> ';\n    print_r($value);\n    echo '</pre>';\n    if ($die) die;\n    \n}",
+			"file": "/C/xampp/htdocs/takh.com.ua/library/mainFunctions.php",
+			"file_size": 620,
+			"file_write_time": 131472846027754529,
+			"settings":
+			{
+				"buffer_size": 595,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/xampp/htdocs/takh.com.ua/controllers/FavoriteController.php",
+			"settings":
+			{
+				"buffer_size": 1261,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 157.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/xampp/htdocs/takh.com.ua",
+		"/C/xampp/htdocs/takh.com.ua/www"
+	],
+	"file_history":
+	[
+		"/C/xampp/htdocs/takh.com.ua/models/TaModel.php",
+		"/C/xampp/htdocs/takh.com.ua/config/db.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/hot-tours.html",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/page-region.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/hot-tours-main.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/page-countries.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/archive1.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/hot-tours.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/singleHot.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/footer.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/header.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/page-main.php",
+		"/C/xampp/htdocs/project1/index.php",
+		"/C/xampp/htdocs/project1/.htaccess",
+		"/C/xampp/htdocs/project1/controller/controller.php",
+		"/C/xampp/htdocs/project1/views/admin/admincontentcategories.php",
+		"/C/xampp/htdocs/project1/views/admincontent.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/functions.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/custom-types.php",
+		"/C/OpenServer/domains/soultravel.com.ua/wp-content/themes/soultravel/thanks.php",
+		"/C/OpenServer/domains/project1/admin.php",
+		"/C/OpenServer/domains/project1/index.php",
+		"/C/OpenServer/domains/project1/controller/controller.php",
+		"/C/OpenServer/domains/project1/views/content.php",
+		"/C/OpenServer/domains/project1/views/footer.php",
+		"/C/OpenServer/domains/project1/hendler.php",
+		"/C/OpenServer/domains/project1/views/admincontent.php",
+		"/C/OpenServer/domains/project1/views/header.php"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 104.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/xampp/htdocs/takh.com.ua/library/mainFunctions.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 595,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								399,
+								399
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/xampp/htdocs/takh.com.ua/controllers/FavoriteController.php",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 1261,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 270.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 39.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "takh.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 289.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
